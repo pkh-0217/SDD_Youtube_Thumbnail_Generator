@@ -12,7 +12,9 @@
     {
       "step": 1,
       "name": "ui-and-canvas",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-06-20T16:26:13+0900",
+      "summary": "클라 canvas 유틸(lib/canvas.ts: 순수 computeTitleLayout + drawThumbnail/exportPng/triggerDownload), 컴포넌트 3종(ThumbnailForm 드롭존·인라인검증·예시칩 / CandidateGallery 3그리드·스켈레톤·선택 / ThumbnailCanvas 즉시 재렌더·PNG 다운로드), page.tsx 상태머신(idle→generating→success|error, AbortController 취소, 입력 보존), globals.css 디자인토큰(Tailwind 미사용). 순수함수 TDD(computeTitleLayout/validateImages/errorView) 13테스트 추가, 전체 24테스트·lint·build 통과. 수동 E2E는 README.md에 문서화."
     }
   ],
   "created_at": "2026-06-20T16:15:57+0900"
