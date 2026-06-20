@@ -74,6 +74,21 @@ export function mapError(e: unknown): ApiError {
   if (status === 429 || /rate.?limit|quota|billing|too many requests/.test(haystack)) {
     return apiError("RATE_LIMITED");
   }
+  // 키/접근 권한(조직 인증) 오류: 코드는 UPSTREAM_ERROR로 유지하되, 운영자가 바로잡을 수 있게
+  // 메시지를 구체화하고 재시도를 끈다(대기로 해결되지 않는 설정 오류).
+  if (
+    status === 401 ||
+    status === 403 ||
+    /missing or empty|missing api key|incorrect api key|api key|unauthorized|forbidden|must be verified|verification/.test(
+      haystack,
+    )
+  ) {
+    return {
+      code: "UPSTREAM_ERROR",
+      message: "OpenAI API 키 또는 조직 인증 설정을 확인해주세요(서버 .env.local / OpenAI 콘솔의 Organization verification).",
+      retryable: false,
+    };
+  }
   if (status === 400 || /invalid|validation/.test(haystack)) {
     return apiError("INVALID_INPUT");
   }

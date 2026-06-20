@@ -13,7 +13,8 @@ export interface ApiError {
 export interface Candidate {
   id: string;
   b64: string;
-  mime: "image/webp";
+  // gpt-image-2가 실제 반영하는 포맷(webp는 무시되고 PNG로 돌아오는 이슈가 있어 jpeg 사용).
+  mime: "image/jpeg";
 }
 
 export interface GenerateResult {

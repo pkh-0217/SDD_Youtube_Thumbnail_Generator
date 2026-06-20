@@ -40,10 +40,18 @@ MVP 속도 최우선. 오버엔지니어링 금지 — 최소 변화로 최대 �
 **이유**: 사용자 행동이 갈리는 최소 분류만 유지(8코드 → 4코드). UI/메시지 결합도 낮춤.
 **트레이드오프**: 세부 원인(예: 401 vs 500)은 UPSTREAM으로 합쳐져 사용자에겐 구분 안 됨(개발 로그로 확인).
 
-### ADR-008: 후보는 webp 응답, 최종 PNG는 클라 생성
-**결정**: 후보 3장은 `output_format:"webp"`로 받아 페이로드를 줄이고, 다운로드 PNG는 canvas가 생성.
-**이유**: 3×1280×720 base64 PNG는 JSON 페이로드가 과도. webp로 3~5배 절감.
-**트레이드오프**: 미리보기와 최종 포맷이 다름(미리보기 webp, 다운로드 PNG) — 품질 차이는 무시 가능.
+### ADR-008: 후보는 jpeg 응답, 최종 PNG는 클라 생성
+**결정**: 후보 3장은 `output_format:"jpeg"`로 받아 페이로드를 줄이고, 다운로드 PNG는 canvas가 생성.
+**이유**: 3×1280×720 base64 PNG는 JSON 페이로드가 과도. jpeg로 수배 절감.
+**주의(검증됨)**: gpt-image-2의 `images.generate`는 `output_format:"webp"`를 **무시하고 PNG를 반환**하는 알려진 이슈가 있다(openai-node #1850). 그래서 webp 대신 **실제로 반영되는 jpeg**를 쓴다. `Candidate.mime`도 `image/jpeg`로 맞춘다.
+**트레이드오프**: 미리보기(jpeg)와 최종 다운로드(PNG) 포맷이 다름 — 품질 차이는 무시 가능. jpeg는 투명도 없음(썸네일은 불투명이라 무관).
+
+### ADR-010: 설정/인증 오류를 서버 로그 + 구체적 메시지로 노출
+**결정**: route catch에서 실제 예외를 `console.error`로 남기고, `mapError`는 401/403·키 누락·"must be verified"를 감지해 코드는 `UPSTREAM_ERROR`로 두되 메시지를 구체화(.env.local / 조직 인증 확인)하고 `retryable:false`로 둔다.
+**이유**: 빈 `OPENAI_API_KEY` / gpt-image-2 조직 인증 미완료가 모두 막연한 "일시적인 오류"로 가려져 디버깅이 어려웠다. 4코드 체계는 유지하면서 운영자가 원인을 바로 알 수 있게 한다.
+**트레이드오프**: 사용자(유튜버)에겐 다소 기술적인 메시지지만, 로컬 셀프호스팅 도구라 운영자=사용자이므로 수용.
+
+> 운영 참고: gpt-image 계열(gpt-image-2 포함)은 OpenAI **Organization verification**을 완료해야 호출 가능하다(미완료 시 403, 인증 후 전파에 최대 15~30분). 결제 활성화도 필요. — `README.md` 트러블슈팅 참조.
 
 ### ADR-009: 린 구조 — services/lib 모듈 미선반영
 **결정**: 호출처 1곳인 OpenAI 호출/검증/에러매핑은 route.ts에 인라인. 별도 모듈 미생성.

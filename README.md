@@ -18,6 +18,22 @@ npm test       # 단위 테스트 (vitest)
 OPENAI_API_KEY=sk-...
 ```
 
+> **중요**: `.env.local`을 바꾸면 **dev 서버를 재시작**해야 한다. Next.js는 서버 시작 시점에만 환경변수를 읽는다.
+
+## 트러블슈팅
+
+생성 시 **"일시적인 오류가 발생했어요"**(= `UPSTREAM_ERROR`)가 뜨면, 서버를 띄운 터미널의
+`[/api/generate] ...` 로그에서 실제 원인을 확인한다. 흔한 원인:
+
+| 증상 / 로그 | 원인 | 해결 |
+|---|---|---|
+| `OPENAI_API_KEY가 비어 있습니다` / `missing or empty` | 키 미설정 또는 서버가 빈 값으로 시작됨 | `.env.local`에 키 입력 후 **dev 재시작** |
+| 401 `Unauthorized` / `incorrect api key` | 잘못된 키 | 올바른 프로젝트의 키로 교체 |
+| 403 `must be verified` / `organization` | gpt-image 계열은 **조직 인증 필수** | OpenAI 콘솔 Settings → Organization에서 verification 완료(전파 최대 15~30분), 결제 활성화 확인 |
+| 429 / `rate limit` / `quota` | 사용량/한도 초과 | 잠시 후 재시도 또는 결제/한도 확인 |
+
+> 참고: gpt-image-2는 `output_format:"webp"`를 무시하고 PNG를 반환하는 이슈가 있어, 후보는 `jpeg`로 받는다(최종 다운로드는 클라 canvas가 PNG로 생성). — ADR-008
+
 ## 수동 E2E
 
 `OPENAI_API_KEY` 설정 후 `npm run dev`로 확인한다.
