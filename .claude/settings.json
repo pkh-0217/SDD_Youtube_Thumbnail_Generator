@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo [harness] Stop hook is a placeholder - set your lint/build/test verify command in .claude/settings.json to match CLAUDE.md"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py scripts/guard.py"
+          }
+        ]
+      }
+    ]
+  }
+}
