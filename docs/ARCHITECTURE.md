@@ -47,7 +47,7 @@ src/
 ## 꼭 필요한 안전장치
 1. 업로드 상한: 최대 4장, 각 ≤8MB, MIME 화이트리스트(png/jpeg/webp). 위반 → `INVALID_INPUT`.
 2. 후보 응답은 `jpeg`(payload 절감). 최종 다운로드 PNG는 클라 canvas가 생성. (webp는 gpt-image-2가 무시하고 PNG 반환 — ADR-008)
-3. 서버 타임아웃 + `export const maxDuration`(기본보다 길게, 생성 지연 대비) → 초과 시 `UPSTREAM_ERROR`.
+3. 서버 타임아웃(`TIMEOUT_MS`) + `export const maxDuration` → 초과 시 `UPSTREAM_ERROR`. **주의(실측)**: n=3·medium 생성은 ~40~70초 걸리므로 타임아웃을 넉넉히(현재 110s, maxDuration 120s) 잡는다. 너무 짧으면(예: 55s) 정상 생성이 AbortError로 끊겨 502가 난다. (배포 시 Vercel maxDuration 상한 주의)
 4. `images.edit` 입력은 SDK `toFile()`로 파일화해 전달(파일명/MIME 누락 시 업스트림 400).
 
 ## 상태 관리

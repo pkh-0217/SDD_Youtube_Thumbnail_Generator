@@ -3,8 +3,9 @@ import OpenAI, { toFile } from "openai";
 import type { Candidate, GenerateResult } from "@/types";
 import { mapError, STATUS, validate } from "./lib";
 
-// Next.js: 생성 지연(15~40초)을 대비해 기본보다 길게 둔다.
-export const maxDuration = 60;
+// Next.js: n=3·medium 생성은 실측 ~40초이고 변동성으로 60초 이상도 나오므로 넉넉히 둔다.
+// (배포 시 Vercel은 플랜별 상한이 있음 — Hobby 60s/Pro 300s. 로컬 dev에선 강제되지 않음.)
+export const maxDuration = 120;
 
 // --- gpt-image-2 호출 파라미터 (한 곳에서 상수 관리) ---
 const MODEL = "gpt-image-2";
@@ -15,8 +16,9 @@ const N = 3;
 // 실제로 반영되는 jpeg를 쓴다(페이로드 절감, ADR-008). 최종 다운로드 PNG는 클라 canvas가 만든다.
 const OUTPUT_FORMAT = "jpeg";
 
-// 서버 타임아웃: maxDuration 안에서 업스트림 호출을 중단할 여유를 둔다.
-const TIMEOUT_MS = 55_000;
+// 서버 타임아웃: n=3·medium 실측(~40초)에 변동성까지 감안해 넉넉히 둔다.
+// 너무 짧으면(예: 55초) 정상 생성이 AbortError로 끊겨 502가 난다.
+const TIMEOUT_MS = 110_000;
 
 export async function POST(req: Request) {
   try {

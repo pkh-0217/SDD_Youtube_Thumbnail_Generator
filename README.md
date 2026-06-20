@@ -31,6 +31,7 @@ OPENAI_API_KEY=sk-...
 | 401 `Unauthorized` / `incorrect api key` | 잘못된 키 | 올바른 프로젝트의 키로 교체 |
 | 403 `must be verified` / `organization` | gpt-image 계열은 **조직 인증 필수** | OpenAI 콘솔 Settings → Organization에서 verification 완료(전파 최대 15~30분), 결제 활성화 확인 |
 | 429 / `rate limit` / `quota` | 사용량/한도 초과 | 잠시 후 재시도 또는 결제/한도 확인 |
+| 약 55초 후 502 / `AbortError` | 서버 타임아웃이 생성 시간보다 짧음 | `route.ts`의 `TIMEOUT_MS`/`maxDuration`을 생성 시간보다 넉넉히(현재 110s/120s). n=3·medium은 실측 ~40~70초 |
 
 > 참고: gpt-image-2는 `output_format:"webp"`를 무시하고 PNG를 반환하는 이슈가 있어, 후보는 `jpeg`로 받는다(최종 다운로드는 클라 canvas가 PNG로 생성). — ADR-008
 

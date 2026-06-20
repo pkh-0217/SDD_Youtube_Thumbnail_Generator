@@ -103,7 +103,7 @@ export default function Home() {
         <section className="card space-y" aria-live="polite">
           <div className="gen-status">
             <span className="spinner" aria-hidden="true" />
-            <span>생성 중… {elapsed}초 (보통 15~40초)</span>
+            <span>생성 중… {elapsed}초 (보통 40~70초, 길면 더 걸려요)</span>
           </div>
           <CandidateGallery loading candidates={[]} selectedId={null} onSelect={() => {}} />
           <div className="row">
