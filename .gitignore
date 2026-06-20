@@ -14,8 +14,10 @@ Thumbs.db
 .vscode/
 
 # --- 프로젝트 스택별 빌드 산출물 (필요시 주석 해제 / 추가) ---
-# node_modules/
-# .next/
+node_modules/
+.next/
+next-env.d.ts
+.env.local
 # out/
 # dist/
 # build/

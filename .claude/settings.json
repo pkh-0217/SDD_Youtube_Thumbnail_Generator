@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo [harness] Stop hook is a placeholder - set your lint/build/test verify command in .claude/settings.json to match CLAUDE.md"
+            "command": "npm run lint && npm run build && npm test"
           }
         ]
       }
