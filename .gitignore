@@ -1,6 +1,7 @@
 # --- Harness 실행 산출물 (커밋 대상 아님) ---
 phases/**/phase*-output.json
 phases/**/step*-output.json
+phases/**/_run.log
 
 # --- Python (하네스 스크립트) ---
 __pycache__/
